@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Optional
 
 from fastapi import FastAPI
 from pydantic import BaseModel
@@ -6,9 +6,9 @@ from pydantic import BaseModel
 
 class Inputs(BaseModel):
     language: str
-    framework: Union[str, None] = None
-    app_type: Union[str, None] = None
-    db_type: Union[str, None] = None
+    framework: Optional[str] = None
+    app_type: Optional[str] = None
+    db_type: Optional[str] = None
     cloud_provider: str
     iac_type: str
     deployment_type: str
