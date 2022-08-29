@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "ginroot-template-service"
+version = "0.1.0"
+description = ""
+authors = ["Natalia <natalia.vayngolts@gmail.com>"]
+packages = [ { include = "app" } ]
+
+[tool.poetry.dependencies]
+python = "3.10.6"
+fastapi = "^0.81.0"
+uvicorn = "^0.18.3"
+SQLAlchemy = "^1.4.40"
+
+[tool.poetry.dev-dependencies]
+
+[tool.poetry.scripts]
+start = "app.main:start"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
