@@ -1,23 +1,21 @@
-from typing import Optional
-
 from fastapi import FastAPI
-from pydantic import BaseModel
+from starlette.middleware.cors import CORSMiddleware
 
+from app.api.api_v1.api import api_router
+from app.core.config import settings
 
-class Inputs(BaseModel):
-    language: str
-    framework: Optional[str] = None
-    app_type: Optional[str] = None
-    db_type: Optional[str] = None
-    cloud_provider: str
-    iac_type: str
-    deployment_type: str
+app = FastAPI(
+    title=settings.PROJECT_NAME, openapi_url=f"{settings.API_V1_STR}/openapi.json"
+)
 
+# Set all CORS enabled origins
+if settings.BACKEND_CORS_ORIGINS:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=[str(origin) for origin in settings.BACKEND_CORS_ORIGINS],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
-app = FastAPI()
-
-
-@app.post("/inputs/")
-async def create_item(inputs: Inputs):
-    # temporary returning inputs
-    return inputs
+app.include_router(api_router, prefix=settings.API_V1_STR)

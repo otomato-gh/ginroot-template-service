@@ -24,16 +24,16 @@ class CRUDTemplate(CRUDBase[Template, TemplateGet, TemplateCreate]):
             .first()
         )
 
-    def get_template_by_parameters(self, db: Session, *, template: TemplateGet) -> Template:
+    def get_template_by_parameters(self, db: Session, *, template_get: TemplateGet) -> Template:
         return (
             db.query(self.model)
-            .filter(Template.language == template.language,
-                    Template.framework == template.framework,
-                    Template.app_type == template.app_type,
-                    Template.db_type == template.db_type,
-                    Template.cloud_provider == template.cloud_provider,
-                    Template.iac_type == template.iac_type,
-                    Template.deployment_type == template.deployment_type)
+            .filter(Template.language == template_get.language,
+                    Template.framework == template_get.framework,
+                    Template.app_type == template_get.app_type,
+                    Template.db_type == template_get.db_type,
+                    Template.cloud_provider == template_get.cloud_provider,
+                    Template.iac_type == template_get.iac_type,
+                    Template.deployment_type == template_get.deployment_type)
             .first()
         )
 
