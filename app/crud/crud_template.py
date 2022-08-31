@@ -17,14 +17,32 @@ class CRUDTemplate(CRUDBase[Template, TemplateGet, TemplateCreate]):
         db.refresh(db_obj)
         return db_obj
 
-    def get_template_by_parameters(self, db: Session, *, language: str, framework: str, app_type: str, db_type: str,
-                                   cloud_provider: str, iac_type: str, deployment_type: str) -> List[Template]:
+    def get_template_by_id(self, db: Session, *, template_id: int) -> Template:
         return (
             db.query(self.model)
-            .filter(Template.language == language, Template.framework == framework, Template.app_type == app_type,
-                    Template.db_type == db_type, Template.cloud_provider == cloud_provider, Template.iac_type == iac_type,
-                    Template.deployment_type == iac_type).all()
+            .filter(Template.id == template_id)
+            .first()
         )
 
+    def get_template_by_parameters(self, db: Session, *, template: TemplateGet) -> Template:
+        return (
+            db.query(self.model)
+            .filter(Template.language == template.language,
+                    Template.framework == template.framework,
+                    Template.app_type == template.app_type,
+                    Template.db_type == template.db_type,
+                    Template.cloud_provider == template.cloud_provider,
+                    Template.iac_type == template.iac_type,
+                    Template.deployment_type == template.deployment_type)
+            .first()
+        )
 
-item = CRUDTemplate(Template)
+    # def get_template_by_app_type(self, db: Session, *, app_type: str) -> List[Template]:
+    #     return (
+    #         db.query(self.model)
+    #         .filter(Template.app_type == app_type)
+    #         .all()
+    #     )
+
+
+template = CRUDTemplate(Template)

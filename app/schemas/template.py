@@ -17,11 +17,7 @@ class TemplateBase(BaseModel):
 
 # Properties to receive on item creation
 class TemplateCreate(TemplateBase):
-    language: str
-    cloud_provider: str
-    iac_type: str
-    deployment_type: str
-    repo_url: str
+    pass
 
 
 # Properties to receive on item update
@@ -32,11 +28,6 @@ class TemplateGet(TemplateBase):
 # Properties shared by models stored in DB
 class TemplateInDBBase(TemplateBase):
     id: int
-    language: str
-    cloud_provider: str
-    iac_type: str
-    deployment_type: str
-    repo_url: str
 
     class Config:
         orm_mode = True
