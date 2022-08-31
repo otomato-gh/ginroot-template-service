@@ -13,9 +13,9 @@ router = APIRouter()
 def get_template_by_parameters(
         *,
         db: Session = Depends(deps.get_db),
-        template_get=schemas.TemplateGet
+        template_get: schemas.TemplateGet
 ) -> Any:
-    template = crud.template.get_template_by_parameters(db=db, template=template_get)
+    template = crud.template.get_template_by_parameters(db=db, template_get=template_get)
     return template
 
 
@@ -25,7 +25,7 @@ def get_template_by_id(
     db: Session = Depends(deps.get_db),
     id: int
 ) -> Any:
-    template = crud.template.get_template_by_id(db=db, id=id)
+    template = crud.template.get_template_by_id(db=db, template_id=id)
     if not template:
         raise HTTPException(status_code=404, detail="Template not found")
     return template
