@@ -1,1 +1,1 @@
-from template import Template, TemplateGet, TemplateCreate, TemplateInDB
+from .template import Template, TemplateGet, TemplateCreate, TemplateInDB

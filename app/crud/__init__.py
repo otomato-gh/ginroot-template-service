@@ -1,1 +1,1 @@
-from crud_template import template
+from .crud_template import template
