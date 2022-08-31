@@ -12,4 +12,4 @@ class Template(Base):
     cloud_provider = Column(String, nullable=False)
     iac_type = Column(String, nullable=False)
     deployment_type = Column(String, nullable=False)
-    url = Column(String, nullable=False)
+    repo_url = Column(String, nullable=False)

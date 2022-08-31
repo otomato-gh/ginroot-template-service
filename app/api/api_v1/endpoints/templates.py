@@ -11,7 +11,8 @@ router = APIRouter()
 
 @router.get("/", response_model=schemas.Template)
 def get_template_by_parameters(
-        db: Session = Depends(deps.get_db()),
+        *,
+        db: Session = Depends(deps.get_db),
         template_get=schemas.TemplateGet
 ) -> Any:
     template = crud.template.get_template_by_parameters(db=db, template=template_get)
@@ -31,10 +32,10 @@ def get_template_by_id(
 
 
 @router.post("/", response_model=schemas.Template)
-def create_item(
+def create_template(
     *,
     db: Session = Depends(deps.get_db),
     template_in: schemas.TemplateCreate
 ) -> Any:
-    template = crud.template.create_template(db=db, template=template_in)
+    template = crud.template.create_template(db=db, template_in=template_in)
     return template

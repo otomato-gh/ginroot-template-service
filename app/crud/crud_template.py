@@ -9,8 +9,8 @@ from app.schemas.template import TemplateGet, TemplateCreate
 
 
 class CRUDTemplate(CRUDBase[Template, TemplateGet, TemplateCreate]):
-    def create_template(self, db: Session, *, obj_in: TemplateCreate) -> Template:
-        obj_in_data = jsonable_encoder(obj_in)
+    def create_template(self, db: Session, *, template_in: TemplateCreate) -> Template:
+        obj_in_data = jsonable_encoder(template_in)
         db_obj = self.model(**obj_in_data)
         db.add(db_obj)
         db.commit()
