@@ -15,3 +15,10 @@ Then run:
 ```bash
 uvicorn app.main:app --reload --port 8000
 ```
+
+## Test application
+Export [environment variables](example_env/.env_app).
+Then run from the [app](./app) directory:
+```bash
+pytest
+```
