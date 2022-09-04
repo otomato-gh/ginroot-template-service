@@ -84,3 +84,16 @@ def test_read_template_by_parameters(
     assert content["deployment_type"] == template.deployment_type
     assert content["repo_url"] == template.repo_url
     assert content["id"] == template.id
+
+
+def test_read_all_templates(
+    client: TestClient, db: Session
+) -> None:
+    template = create_random_template(db)
+    response = client.get(
+        f"{settings.API_V1_STR}/templates/all"
+    )
+    assert response.status_code == 200
+    content = response.json()
+    print(content)
+    assert len(content) > 0
