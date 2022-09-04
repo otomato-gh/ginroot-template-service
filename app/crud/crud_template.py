@@ -17,6 +17,14 @@ class CRUDTemplate(CRUDBase[Template, TemplateGet, TemplateCreate]):
         db.refresh(db_obj)
         return db_obj
 
+    def get_all_templates(self, db: Session, *, skip: int = 0, limit: int = 100) -> List[Template]:
+        return (
+            db.query(self.model)
+            .offset(skip)
+            .limit(limit)
+            .all()
+        )
+
     def get_template_by_id(self, db: Session, *, template_id: int) -> Template:
         return (
             db.query(self.model)
