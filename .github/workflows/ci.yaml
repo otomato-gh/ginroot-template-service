@@ -24,7 +24,7 @@ jobs:
         uses: actions/cache@v1
         with:
          # path: ~/.local/share/virtualenvs
-          path: ~/.local/share/virtualenvs
+          path: ~/
           key: ${{ runner.os }}-pipenv-${{ hashFiles('**/poetry.lock') }}
 
       - name: Install dependencies
