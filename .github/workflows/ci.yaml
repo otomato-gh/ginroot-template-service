@@ -24,6 +24,13 @@ jobs:
           poetry install
 
       - name: Test with Poetry
+        env: 
+          # PROJECT_NAME: ${{ secrets.PROJECT_NAME }}
+          PROJECT_NAME: template_svc
+          POSTGRES_SERVER: localhost:5432
+          POSTGRES_USER: admin
+          POSTGRES_PASSWORD: qwerty123
+          POSTGRES_DB: test_db
         run: |
           poetry config --local virtualenvs.in-project true
           poetry lock --no-update
