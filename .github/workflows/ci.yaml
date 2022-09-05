@@ -46,8 +46,8 @@ jobs:
           apt-get install --yes postgresql-client
 
       # queries database with postgres client
-      - name: Query database
-        run: psql -h postgres -d test_db -U postgres_user -f postgres/CreateDB.sql
+      - name: Query Database and Import SQL
+        run: psql -h postgres -d test_db -U admin -f postgres/CreateDB.sql
         env:
           # postgress password is required; alternatively, you can run:
           # `PGPASSWORD=postgres_password psql ...`
