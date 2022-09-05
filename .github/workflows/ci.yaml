@@ -47,7 +47,15 @@ jobs:
 
       # queries database with postgres client
       - name: Query Database and Import SQL
-        run: psql -h postgres -d test_db -U admin -f postgres/CreateDB.sql
+        run: psql -h postgres -d test_db -U admin -c 'CREATE TABLE template (id integer primary key generated always as identity,\
+                                                 language character varying(20) NOT NULL, \
+                                                 framework character varying(20), \
+                                                 app_type character varying(20), \
+                                                 db_type character varying(20), \
+                                                 cloud_provider character varying(20) NOT NULL, \
+                                                 iac_type character varying(20) NOT NULL, \
+                                                 deployment_type character varying(20) NOT NULL, \
+                                                 repo_url character varying(255) NOT NULL);'
         env:
           # postgress password is required; alternatively, you can run:
           # `PGPASSWORD=postgres_password psql ...`
