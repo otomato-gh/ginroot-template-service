@@ -1,7 +1,9 @@
 # .github/workflows/app.yaml
 name: Test and build then
 # on: workflow_dispatch
-on: push
+on: 
+ push:
+    branches: ci
 
 jobs:
   test:
@@ -25,7 +27,7 @@ jobs:
 
       - name: Test with Poetry
         env: 
-          # PROJECT_NAME: ${{ secrets.PROJECT_NAME }}
+          # PROJECT_NAME: ${{ secrets.PROJECT_NAME }} # It turned out that I have no access to repo secrets
           PROJECT_NAME: template_svc
           POSTGRES_SERVER: localhost:5432
           POSTGRES_USER: admin
@@ -34,7 +36,7 @@ jobs:
         run: |
           poetry config --local virtualenvs.in-project true
           poetry lock --no-update
-          pip install pytest-dotenv
           poetry run pytest -v app
+          
           
           
