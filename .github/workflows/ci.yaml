@@ -1,5 +1,5 @@
 # .github/workflows/app.yaml
-name: Test and build then
+name: Test app with DB and build then
 # on: workflow_dispatch
 on: 
  push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
 
-  postgres:
+  postgres-test:
     # containers must run in Linux based operating systems
     runs-on: ubuntu-latest
     # Docker Hub image that `postgres-job` executes in
@@ -62,11 +62,11 @@ jobs:
           PGPASSWORD: qwerty123
           
           
-  test:
-    needs: postgres
-    runs-on: ubuntu-latest
+ # test:
+ #   needs: postgres
+ #   runs-on: ubuntu-latest
 
-    steps:
+ #   steps:
       - name: Check out repository code
         uses: actions/checkout@v2
 
