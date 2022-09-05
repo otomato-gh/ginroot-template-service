@@ -47,7 +47,7 @@ jobs:
 
       # queries database with postgres client
       - name: Query Database and Import SQL
-        run: psql -h postgres -d test_db -U admin -c 'CREATE TABLE template (id integer primary key generated always as identity,\
+        run: psql -h postgres -d test_db -U admin -c 'CREATE TABLE template (id integer primary key generated always as identity, 
                                                  language character varying(20) NOT NULL, 
                                                  framework character varying(20), 
                                                  app_type character varying(20), 
