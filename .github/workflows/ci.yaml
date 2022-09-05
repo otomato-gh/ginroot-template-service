@@ -7,11 +7,11 @@ on:
 
 jobs:
 
-  postgres-test:
+  postgres:
     # containers must run in Linux based operating systems
     runs-on: ubuntu-latest
     # Docker Hub image that `postgres` executes in
-    container: ubuntu:latest
+    container: ubuntu1
     # service containers to run with `postgres` job
     services:
       # label used to access the service container
@@ -62,11 +62,12 @@ jobs:
           PGPASSWORD: qwerty123
           
           
- # test:
- #   needs: postgres
- #   runs-on: ubuntu-latest
+  test:
+     needs: postgres
+     runs-on: ubuntu-latest
+     container: ubuntu2
 
- #   steps:
+     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
 
