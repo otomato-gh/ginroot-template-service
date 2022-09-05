@@ -88,7 +88,8 @@ jobs:
         env: 
           # PROJECT_NAME: ${{ secrets.PROJECT_NAME }} # It turned out that I have no access to repo secrets
           PROJECT_NAME: template_svc
-          POSTGRES_SERVER: ${{ job.services.postgres.ports[5432] }}  # :5432
+          POSTGRES_SERVER: localhost:${{ job.services.postgres.ports[5432] }}  # :5432
+        #  POSTGRES_SERVER: localhost:5432
           POSTGRES_USER: admin
           POSTGRES_PASSWORD: qwerty123
           POSTGRES_DB: test_db
