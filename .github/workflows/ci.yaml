@@ -47,7 +47,7 @@ jobs:
 
       # queries database with postgres client
       - name: Query Database and Import SQL
-        run: psql -h postgres -d test_db -U admin -f /github/workspace/postgres/CreateDB.sql
+        run: psql -h postgres -d test_db -U admin -f postgres/CreateDB.sql
         env:
           # postgress password is required; alternatively, you can run:
           # `PGPASSWORD=postgres_password psql ...`
