@@ -8,6 +8,13 @@ from app.api import deps
 
 router = APIRouter()
 
+@router.get("/all", response_model=List[schemas.Template])
+def get_all_templates(
+        *,
+        db: Session = Depends(deps.get_db) 
+) -> Any:
+    templates = crud.template.get_all_templates(db=db)
+    return templates
 
 @router.get("/", response_model=schemas.Template)
 def get_template_by_parameters(
