@@ -42,6 +42,7 @@ jobs:
           poetry install
       - name: Test with Poetry
         run: |
+          poetry config --local virtualenvs.in-project true
           poetry run pytest
           
           
