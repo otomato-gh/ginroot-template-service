@@ -11,7 +11,7 @@ jobs:
     # containers must run in Linux based operating systems
     runs-on: ubuntu-latest
     # Docker Hub image that `postgres` executes in
-    container: ubuntu
+    # container: ubuntu
     # service containers to run with `postgres` job
     services:
       # label used to access the service container
@@ -19,7 +19,7 @@ jobs:
         # Docker Hub image
         image: postgres:latest
         # service environment variables
-        # `POSTGRES_HOST` is `postgres`
+        # `POSTGRES_HOST` is `postgres` (if not containerized, but vm job then hostname will be localhost)
         env:
           # optional (defaults to `postgres`)
           POSTGRES_DB: test_db
@@ -88,7 +88,7 @@ jobs:
         env: 
           # PROJECT_NAME: ${{ secrets.PROJECT_NAME }} # It turned out that I have no access to repo secrets
           PROJECT_NAME: template_svc
-          POSTGRES_SERVER: postgres:5432
+          POSTGRES_SERVER: ${{ job.services.postgres.ports[5432] }}  # :5432
           POSTGRES_USER: admin
           POSTGRES_PASSWORD: qwerty123
           POSTGRES_DB: test_db
