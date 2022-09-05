@@ -27,6 +27,7 @@ jobs:
         run: |
           poetry config --local virtualenvs.in-project true
           poetry lock --no-update
+          pip install pytest-dotenv
           poetry run pytest -v app
           
           
