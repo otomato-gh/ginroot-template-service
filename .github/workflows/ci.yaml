@@ -43,6 +43,7 @@ jobs:
       - name: Test with Poetry
         run: |
           poetry config --local virtualenvs.in-project true
+          poetry lock --no-update
           poetry run pytest
           
           
