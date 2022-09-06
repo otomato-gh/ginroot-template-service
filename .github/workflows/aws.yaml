@@ -1,0 +1,18 @@
+# .github/workflows/aws.yaml
+name: AWS ECR
+# on: workflow_dispatch
+on: 
+ push:
+    branches: ci
+jobs:
+  aws:
+    runs-on: ubuntu-latest
+  steps:  
+  - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-region: us-east-1
+        role-to-assume: arn:aws:iam::195652531345:role/ginroot-ecr-gha
+        role-session-name: ECRSession
+        
+        
