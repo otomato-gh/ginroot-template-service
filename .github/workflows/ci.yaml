@@ -1,14 +1,14 @@
-# .github/workflows/app.yaml
+# .github/workflows/ci.yaml
 name: Test app with DB and build then
-# on: workflow_dispatch
+# on: 
+#   workflow_dispatch:
 on: 
- # push:
- workflow_dispatch:
- #   branches: ci
+  push:
+    branches: ci
 
 jobs:
 
-  postgres:
+  postgres-test:
     # containers must run in Linux based operating systems
     runs-on: ubuntu-latest
     # Docker Hub image that `postgres` executes in
@@ -63,13 +63,6 @@ jobs:
           # `PGPASSWORD=postgres_password psql ...`
           PGPASSWORD: qwerty123
           
-          
-  #test:
-  #   needs: postgres
-  #   runs-on: ubuntu-latest
-     ## container: ubuntu
-
-   #  steps:
       - name: Check out repository code
         uses: actions/checkout@v2
 
@@ -98,5 +91,37 @@ jobs:
           poetry config --local virtualenvs.in-project true
           poetry lock --no-update
           poetry run pytest -v app
-          
-          
+       
+  aws:
+    needs: postgres-test
+    runs-on: ubuntu-latest
+    
+    steps:  
+    
+     - name: Configure AWS Credentials
+       uses: aws-actions/configure-aws-credentials@v1
+       with:
+        aws-region: us-east-1
+        role-to-assume: arn:aws:iam::195652531345:role/ginroot-ecr-gha
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_GINROOT }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY_GINROOT }}
+        role-session-name: ECRSession       
+     
+     - name: Login to Amazon ECR
+       id: login-ecr
+       uses: aws-actions/amazon-ecr-login@v1
+     
+     # None of our files will be visible to docker build without checkout!
+     - name: Check out the code
+       uses: actions/checkout@v2
+        
+     - name: Build, tag, and push to AWS ECR docker image for app
+       env:
+        REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        REPOSITORY: ginroot-template-service
+        IMAGE_TAG: ${{ github.sha }}
+       run: |
+        docker build . -t $REGISTRY/$REPOSITORY:$IMAGE_TAG
+        docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG      
+        
+        
