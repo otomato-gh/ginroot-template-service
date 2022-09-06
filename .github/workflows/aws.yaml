@@ -4,9 +4,7 @@ name: AWS ECR
 on: 
  push:
     branches: ci
-permissions:
-      id-token: write
-      contents: read
+
 jobs:
   aws:
     runs-on: ubuntu-latest
@@ -25,16 +23,20 @@ jobs:
      - name: Login to Amazon ECR
        id: login-ecr
        uses: aws-actions/amazon-ecr-login@v1
-
-     - name: Build, tag, and push PostgreSQL custom docker image
+     
+     # None of our files will be visible to docker build without checkout!
+     - name: Check out the code
+       uses: actions/checkout@v2
+        
+     - name: Build, tag, and push to AWS ECR docker image for app
        env:
         REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         REPOSITORY: ginroot-template-service
         IMAGE_TAG: ${{ github.sha }}
        run: |
-        docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG postgres
+        docker build . -t $REGISTRY/$REPOSITORY:$IMAGE_TAG
         docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG        
-        
+
        
 
         

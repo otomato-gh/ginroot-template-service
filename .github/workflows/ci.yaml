@@ -2,8 +2,9 @@
 name: Test app with DB and build then
 # on: workflow_dispatch
 on: 
- push:
-    branches: ci
+ # push:
+ workflow_dispatch:
+ #   branches: ci
 
 jobs:
 
