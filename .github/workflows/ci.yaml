@@ -80,13 +80,12 @@ jobs:
           
       - name: Test application's code with Poetry
         env: 
-          # PROJECT_NAME: ${{ secrets.PROJECT_NAME }} # It turned out that I have no access to repo secrets
           PROJECT_NAME: template_svc
           POSTGRES_SERVER: localhost:${{ job.services.postgres.ports[5432] }}  # :5432
         #  POSTGRES_SERVER: localhost:5432
-          POSTGRES_USER: admin
-          POSTGRES_PASSWORD: qwerty123
-          POSTGRES_DB: test_db
+          POSTGRES_USER: ${{ secrets.PG_USER_GINROOT }}
+          POSTGRES_PASSWORD: ${{ secrets.PG_PASS_GINROOT }}
+          POSTGRES_DB: ${{ secrets.PG_DB_GINROOT }}
         run: |
           poetry config --local virtualenvs.in-project true
           poetry lock --no-update
