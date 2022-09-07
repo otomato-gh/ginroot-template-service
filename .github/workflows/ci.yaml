@@ -61,7 +61,7 @@ jobs:
         env:
           # postgress password is required; alternatively, you can run:
           # `PGPASSWORD=postgres_password psql ...`
-          PGPASSWORD: qwerty123
+          PGPASSWORD: ${{ secrets.PG_PASS_GINROOT }}
           
       - name: Check out repository code
         uses: actions/checkout@v2
