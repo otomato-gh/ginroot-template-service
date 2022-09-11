@@ -6,7 +6,7 @@ authors = ["Natalia <natalia.vayngolts@gmail.com>"]
 packages = [ { include = "app" } ]
 
 [tool.poetry.dependencies]
-python = "3.10.6"
+python = "^3.10"
 fastapi = "^0.81.0"
 uvicorn = "^0.18.3"
 SQLAlchemy = "^1.4.40"
