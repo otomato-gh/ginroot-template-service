@@ -1,7 +1,5 @@
 # .github/workflows/ci.yaml
-name: Test app with DB and build then
-# on: 
-#   workflow_dispatch:
+name: Test app with DB and build, upload images
 on: 
   push:
     branches: ci
@@ -9,45 +7,28 @@ on:
 jobs:
 
   postgres-test:
-    # containers must run in Linux based operating systems
     runs-on: ubuntu-latest
-    # Docker Hub image that `postgres` executes in
-    # container: ubuntu
-    # service containers to run with `postgres` job
     services:
-      # label used to access the service container
       postgres:
-        # Docker Hub image
         image: postgres:14.5
-        # service environment variables
-        # `POSTGRES_HOST` is `postgres` (if not containerized, but vm job then hostname will be localhost)
         env:
-          # optional (defaults to `postgres`)
           POSTGRES_DB: ${{ secrets.PG_DB_GINROOT }}
-          # required
           POSTGRES_PASSWORD: ${{ secrets.PG_PASS_GINROOT }}
-          # optional (defaults to `5432`)
           POSTGRES_PORT: 5432
-          # optional (defaults to `postgres`)
           POSTGRES_USER: ${{ secrets.PG_USER_GINROOT }}
         ports:
-          # maps tcp port 5432 on service container to the host
           - 5432:5432
-        # set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-    #  python-poetry:
-    #     image: ubuntu
     steps:
       - name: Install PostgreSQL client
         run: |
           sudo apt-get update
           sudo apt-get install --yes postgresql-client
 
-      # queries database with postgres client
       - name: Query Database and Import SQL
         run: psql -h localhost -d test_db -U admin -c 'CREATE TABLE template (id integer primary key generated always as identity, 
                                                  language character varying(20) NOT NULL, 
@@ -59,8 +40,6 @@ jobs:
                                                  deployment_type character varying(20) NOT NULL, 
                                                  repo_url character varying(255) NOT NULL);'
         env:
-          # postgress password is required; alternatively, you can run:
-          # `PGPASSWORD=postgres_password psql ...`
           PGPASSWORD: ${{ secrets.PG_PASS_GINROOT }}
           
       - name: Check out repository code
@@ -82,7 +61,6 @@ jobs:
         env: 
           PROJECT_NAME: template_svc
           POSTGRES_SERVER: localhost:${{ job.services.postgres.ports[5432] }}  # :5432
-        #  POSTGRES_SERVER: localhost:5432
           POSTGRES_USER: ${{ secrets.PG_USER_GINROOT }}
           POSTGRES_PASSWORD: ${{ secrets.PG_PASS_GINROOT }}
           POSTGRES_DB: ${{ secrets.PG_DB_GINROOT }}
@@ -91,7 +69,7 @@ jobs:
           poetry lock --no-update
           poetry run pytest -v app
        
-  aws:
+  build-image-upload-to-aws-ecr:
     needs: postgres-test
     runs-on: ubuntu-latest
     
@@ -110,7 +88,6 @@ jobs:
        id: login-ecr
        uses: aws-actions/amazon-ecr-login@v1
      
-     # None of our files will be visible to docker build without checkout!
      - name: Check out the code
        uses: actions/checkout@v2
         
