@@ -44,6 +44,8 @@ class Settings(BaseSettings):
             path=f"/{values.get('POSTGRES_DB') or ''}",
         )
 
+    SERVER_PORT: int = 8080
+
     class Config:
         case_sensitive = True
 
