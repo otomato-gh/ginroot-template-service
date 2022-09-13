@@ -1,13 +1,13 @@
 # Developing
 
-Python version: 3.10.6
+Python version: 3.10+
 
 ## Create a virtual environment. 
 
 If you decide to use [pyenv](https://github.com/pyenv/pyenv) with virtualenvwrapper (this is what I'm using):
 
 ```bash
-pyenv install 3.10.6
+pyenv install 3.10.7
 pyenv virtualenvwrapper
 mkvirtualenv -p ${PYENV_ROOT}/versions/3.10.6/bin/python3 ginroot
 workon ginroot
