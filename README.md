@@ -1,6 +1,9 @@
 # ginroot-template-service
 The template microservice
 
+## Set up the development environment
+ 
+Follow [instructions](CONTRIBUTING.md).
 
 ## Build and launch Postgres in Docker to work with the service
 ```bash
