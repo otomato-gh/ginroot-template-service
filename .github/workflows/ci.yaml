@@ -1,9 +1,12 @@
 # .github/workflows/ci.yaml
 name: Test app with DB and build, upload images
-on: 
+on:
+  pull_request:
   push:
-    branches: | 
-     - '**' 
+    branches:
+      - '**'
+    tags-ignore:
+      - '**'
 
 jobs:
 
@@ -83,6 +86,7 @@ jobs:
         role-to-assume: arn:aws:iam::195652531345:role/ginroot-ecr-gha
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_GINROOT }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY_GINROOT }}
+        role-duration-seconds: 3600
         role-session-name: ECRSession       
      
      - name: Login to Amazon ECR
@@ -105,13 +109,13 @@ jobs:
        uses: gacts/github-slug@v1
        id: slug
        with:
-        rewritedbranchname: ${{ steps.extract_branch.outputs.branch }}
+        to-slug: ${{ steps.extract_branch.outputs.branch }}
         
      - name: Build, tag, and push to AWS ECR docker image for app
        env:
         REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         REPOSITORY: ginroot-template-service
-        IMAGE_TAG:  ${{ steps.slug.outputs.rewritedbranchname}}-${{ steps.vars.outputs.sha_short }}
+        IMAGE_TAG: ${{ steps.slug.outputs.slug }}-${{ steps.vars.outputs.sha_short }}
        run: |
         docker build . -t $REGISTRY/$REPOSITORY:$IMAGE_TAG
         docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG      
