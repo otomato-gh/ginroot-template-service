@@ -2,75 +2,76 @@
 name: Test app with DB and build, upload images
 on: 
   push:
-    branches: [ main, ci ]
+    branches: | 
+     - '**' 
 
 jobs:
 
-  postgres-test:
-    runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:14.5
-        env:
-          POSTGRES_DB: ${{ secrets.PG_DB_GINROOT }}
-          POSTGRES_PASSWORD: ${{ secrets.PG_PASS_GINROOT }}
-          POSTGRES_PORT: 5432
-          POSTGRES_USER: ${{ secrets.PG_USER_GINROOT }}
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-    steps:
-      - name: Install PostgreSQL client
-        run: |
-          sudo apt-get update
-          sudo apt-get install --yes postgresql-client
-
-      - name: Query Database and Import SQL
-        run: psql -h localhost -d test_db -U admin -c 'CREATE TABLE template (id integer primary key generated always as identity, 
-                                                 language character varying(20) NOT NULL, 
-                                                 framework character varying(20), 
-                                                 app_type character varying(20), 
-                                                 db_type character varying(20), 
-                                                 cloud_provider character varying(20) NOT NULL, 
-                                                 iac_type character varying(20) NOT NULL, 
-                                                 deployment_type character varying(20) NOT NULL, 
-                                                 repo_url character varying(255) NOT NULL);'
-        env:
-          PGPASSWORD: ${{ secrets.PG_PASS_GINROOT }}
-          
-      - name: Check out repository code
-        uses: actions/checkout@v2
-
-      - name: Setup Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: "3.10"
-
-      - name: Install Python dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install poetry
-          poetry config virtualenvs.create true
-          poetry install          
-          
-      - name: Test application's code with Poetry
-        env: 
-          PROJECT_NAME: template_svc
-          POSTGRES_SERVER: localhost:${{ job.services.postgres.ports[5432] }}  # :5432
-          POSTGRES_USER: ${{ secrets.PG_USER_GINROOT }}
-          POSTGRES_PASSWORD: ${{ secrets.PG_PASS_GINROOT }}
-          POSTGRES_DB: ${{ secrets.PG_DB_GINROOT }}
-        run: |
-          poetry config --local virtualenvs.in-project true
-          poetry lock --no-update
-          poetry run pytest -v app
+#  postgres-test:
+#    runs-on: ubuntu-latest
+#    services:
+#      postgres:
+#        image: postgres:14.5
+#        env:
+#          POSTGRES_DB: ${{ secrets.PG_DB_GINROOT }}
+#          POSTGRES_PASSWORD: ${{ secrets.PG_PASS_GINROOT }}
+#          POSTGRES_PORT: 5432
+#          POSTGRES_USER: ${{ secrets.PG_USER_GINROOT }}
+#        ports:
+#          - 5432:5432
+#        options: >-
+#          --health-cmd pg_isready
+#          --health-interval 10s
+#          --health-timeout 5s
+#          --health-retries 5
+#    steps:
+#      - name: Install PostgreSQL client
+#        run: |
+#          sudo apt-get update
+#          sudo apt-get install --yes postgresql-client1
+#
+#      - name: Query Database and Import SQL
+#        run: psql -h localhost -d test_db -U admin -c 'CREATE TABLE template (id integer primary key generated always as identity, 
+#                                                 language character varying(20) NOT NULL, 
+#                                                 framework character varying(20), 
+#                                                 app_type character varying(20), 
+#                                                 db_type character varying(20), 
+#                                                 cloud_provider character varying(20) NOT NULL, 
+#                                                 iac_type character varying(20) NOT NULL, 
+#                                                 deployment_type character varying(20) NOT NULL, 
+#                                                 repo_url character varying(255) NOT NULL);'
+#        env:
+#          PGPASSWORD: ${{ secrets.PG_PASS_GINROOT }}
+#          
+#      - name: Check out repository code
+#        uses: actions/checkout@v2
+#
+#      - name: Setup Python
+#        uses: actions/setup-python@v2
+#        with:
+#          python-version: "3.10"
+#
+#      - name: Install Python dependencies
+#        run: |
+#          python -m pip install --upgrade pip
+#          pip install poetry
+#          poetry config virtualenvs.create true
+#          poetry install          
+#          
+#      - name: Test application's code with Poetry
+#        env: 
+#          PROJECT_NAME: template_svc
+#          POSTGRES_SERVER: localhost:${{ job.services.postgres.ports[5432] }}  # :5432
+#          POSTGRES_USER: ${{ secrets.PG_USER_GINROOT }}
+#          POSTGRES_PASSWORD: ${{ secrets.PG_PASS_GINROOT }}
+#          POSTGRES_DB: ${{ secrets.PG_DB_GINROOT }}
+#        run: |
+#          poetry config --local virtualenvs.in-project true
+#          poetry lock --no-update
+#          poetry run pytest -v app
        
   build-image-upload-to-aws-ecr:
-    needs: postgres-test
+#    needs: postgres-test
     runs-on: ubuntu-latest
     
     steps:  
@@ -99,12 +100,18 @@ jobs:
      - name: Set outputs for short SHA
        id: vars
        run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+     
+     - name: Rewrite branch name to slug
+       uses: gacts/github-slug@v1
+       id: slug
+       with:
+        rewritedbranchname: ${{ steps.extract_branch.outputs.branch }}
         
      - name: Build, tag, and push to AWS ECR docker image for app
        env:
         REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         REPOSITORY: ginroot-template-service
-        IMAGE_TAG:  ${{ steps.extract_branch.outputs.branch }}-${{ steps.vars.outputs.sha_short }}
+        IMAGE_TAG:  ${{ steps.slug.outputs.rewritedbranchname}}-${{ steps.vars.outputs.sha_short }}
        run: |
         docker build . -t $REGISTRY/$REPOSITORY:$IMAGE_TAG
         docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG      
