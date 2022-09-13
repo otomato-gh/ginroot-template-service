@@ -110,8 +110,18 @@ jobs:
        id: slug
        with:
         to-slug: ${{ steps.extract_branch.outputs.branch }}
-        
-     - name: Build, tag, and push to AWS ECR docker image for app
+   
+     - name: TAG for main branch. AWS ECR docker image for app
+       if: ${{ github.ref == 'refs/heads/main' }}
+       env:
+        REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        REPOSITORY: ginroot-template-service
+        IMAGE_TAG_MAIN: latest
+       run: |
+        docker build . -t $REGISTRY/$REPOSITORY:$IMAGE_TAG_MAIN
+        docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG_MAIN    
+   
+     - name: TAG for other branch. AWS ECR docker image for app
        env:
         REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         REPOSITORY: ginroot-template-service
