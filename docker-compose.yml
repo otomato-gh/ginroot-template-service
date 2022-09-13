@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  template-service:
+    container_name: template-service
+    build: .
+    image: template-service
+    platform: linux/amd64
+    ports:
+      - "8000:80"
+    depends_on:
+      - postgres
+    env_file:
+      - ./example_env/.env_app
+    networks:
+      - ginroot
+
+  postgres:
+    container_name: postgres
+    image: postgres:14.5
+    platform: linux/amd64
+    env_file:
+      - ./example_env/.env_postgres
+    volumes:
+      - ./postgres/CreateDB.sql:/docker-entrypoint-initdb.d/CreateDB.sql
+    networks:
+      - ginroot
+
+networks:
+  ginroot:
+    name: ginroot
