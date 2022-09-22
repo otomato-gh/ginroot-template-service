@@ -12,7 +12,7 @@ class TemplateBase(BaseModel):
     cloud_provider: str
     iac_type: str
     deployment_type: str
-    repo_url: str
+    repo_url: Optional[str] = None
 
 
 # Properties to receive on item creation
