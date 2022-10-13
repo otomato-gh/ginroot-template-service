@@ -22,7 +22,8 @@ services:
     env_file:
       - ./example_env/.env_postgres
     volumes:
-      - ./postgres/CreateDB.sql:/docker-entrypoint-initdb.d/CreateDB.sql
+      - ./postgres/01_CreateDB.sql:/docker-entrypoint-initdb.d/01_CreateDB.sql
+      - ./postgres/02_TestEntries.sql:/docker-entrypoint-initdb.d/02_TestEntries.sql
     networks:
       - ginroot
 
