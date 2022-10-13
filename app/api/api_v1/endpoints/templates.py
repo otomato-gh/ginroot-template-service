@@ -23,6 +23,8 @@ def get_template_by_parameters(
         template_get: schemas.TemplateGet
 ) -> Any:
     template = crud.template.get_template_by_parameters(db=db, template_get=template_get)
+    if not template:
+        raise HTTPException(status_code=404, detail="Template not found")
     return template
 
 
