@@ -115,6 +115,10 @@ jobs:
         docker build . -t $REGISTRY/$REPOSITORY:$IMAGE_TAG
         docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG      
 
+  deploy:
+    needs: build-image-upload-to-aws-ecr
+    runs-on: ubuntu-latest
+    steps:
      - name: Configure AWS Credentials for EKS
        uses: aws-actions/configure-aws-credentials@v1
        with:
