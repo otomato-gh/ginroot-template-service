@@ -137,9 +137,9 @@ jobs:
       - name: Check out the code
         uses: actions/checkout@v2
 
-      - name: Deploy the Helm chart
+      - name: Deploy the Helm chart (with more verbosity)
         run: |
-          helm upgrade template-service ./chart -i --atomic
+          helm --debug upgrade template-service ./chart -i --atomic
        
 #      - name: Deploy to cluster if commit came to the Main branch
 #        uses: kodermax/kubectl-aws-eks@master
