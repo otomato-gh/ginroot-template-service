@@ -137,10 +137,15 @@ jobs:
       - name: Check out the code
         uses: actions/checkout@v2
 
-      - name: Deploy the Helm chart (with more verbosity)
+      - name: Deploy the Helm chart (with more verbosity) if commit came the Main branch
+        if: ${{ github.ref == 'refs/heads/main' }}
         run: |
-          helm --debug upgrade template-service ./chart -i --atomic
+          helm --debug upgrade template-service ./chart -i --atomic --set image.repository=${{ steps.login-ecr.outputs.registry }}/ginroot-template-service,image.tag=latest -n stage
        
+      - name: Deploy the Helm chart (with more verbosity) if commit came to other branch
+        run: |
+          helm --debug upgrade template-service ./chart -i --atomic --set image.repository=${{ steps.login-ecr.outputs.registry }}/ginroot-template-service,image.tag=${{ steps.slug.outputs.branch-name-slug }}-${{ steps.slug.outputs.commit-hash-short }} -n dev
+
 #      - name: Deploy to cluster if commit came to the Main branch
 #        uses: kodermax/kubectl-aws-eks@master
 #        if: ${{ github.ref == 'refs/heads/main' }}
