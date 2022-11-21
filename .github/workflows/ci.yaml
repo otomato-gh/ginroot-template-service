@@ -119,6 +119,9 @@ jobs:
         run: |
           docker build . -t $REGISTRY/$REPOSITORY:$IMAGE_TAG
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG      
+          echo "-------"
+          echo ${{ steps.login-ecr.outputs.registry }}
+          echo "-------" 
 
   deploy:
     needs: build-image-upload-to-aws-ecr
@@ -156,10 +159,16 @@ jobs:
       - name: Deploy the Helm chart (with more verbosity) if commit came the Main branch
         if: ${{ github.ref == 'refs/heads/main' }}
         run: |
+          echo "-------"
+          echo ${{ steps.login-ecr.outputs.registry }}
+          echo "-------" 
           helm --debug upgrade template-service ./chart -i --atomic --set image.repository=${{ needs.build-image-upload-to-aws-ecr.outputs.output1 }}/ginroot-template-service,image.tag=latest -n stage
        
       - name: Deploy the Helm chart (with more verbosity) if commit came to other branch
         run: |
+          echo "-------"
+          echo ${{ steps.login-ecr.outputs.registry }}
+          echo "-------" 
           helm --debug upgrade template-service ./chart -i --atomic --set image.repository=${{ needs.build-image-upload-to-aws-ecr.outputs.output1 }}/ginroot-template-service,image.tag=${{ needs.build-image-upload-to-aws-ecr.outputs.output2 }} -n dev
 
 #      - name: Deploy to cluster if commit came to the Main branch
