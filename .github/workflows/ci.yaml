@@ -149,12 +149,12 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' }}
         run: |
           helm repo add bitnami https://charts.bitnami.com/bitnami
-          helm install pgsql bitnami/postgresql -n stage
+          helm upgrade --install pgsql bitnami/postgresql -n stage
       
       - name: Deploy PostgreSQL (dev)
         run: |
           helm repo add bitnami https://charts.bitnami.com/bitnami
-          helm install pgsql bitnami/postgresql -n dev
+          helm upgrade --install pgsql bitnami/postgresql -n dev
 
       - name: Deploy the Helm chart (with more verbosity) if commit came the Main branch
         if: ${{ github.ref == 'refs/heads/main' }}
@@ -162,14 +162,14 @@ jobs:
           echo "-------"
           echo ${{ steps.login-ecr.outputs.registry }}
           echo "-------" 
-          helm --debug upgrade template-service ./chart -i --atomic --set image.repository=${{ needs.build-image-upload-to-aws-ecr.outputs.output1 }}/ginroot-template-service,image.tag=latest -n stage
+          helm --debug upgrade --install template-service ./chart -i --atomic --set image.repository=${{ needs.build-image-upload-to-aws-ecr.outputs.output1 }}/ginroot-template-service,image.tag=latest -n stage
        
       - name: Deploy the Helm chart (with more verbosity) if commit came to other branch
         run: |
           echo "-------"
           echo ${{ steps.login-ecr.outputs.registry }}
           echo "-------" 
-          helm --debug upgrade template-service ./chart -i --atomic --set image.repository=${{ needs.build-image-upload-to-aws-ecr.outputs.output1 }}/ginroot-template-service,image.tag=${{ needs.build-image-upload-to-aws-ecr.outputs.output2 }} -n dev
+          helm --debug upgrade --install template-service ./chart -i --atomic --set image.repository=${{ needs.build-image-upload-to-aws-ecr.outputs.output1 }}/ginroot-template-service,image.tag=${{ needs.build-image-upload-to-aws-ecr.outputs.output2 }} -n dev
 
 #      - name: Deploy to cluster if commit came to the Main branch
 #        uses: kodermax/kubectl-aws-eks@master
