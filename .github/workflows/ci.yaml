@@ -150,12 +150,12 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' }}
         run: |
           helm repo add bitnami https://charts.bitnami.com/bitnami
-          helm upgrade --install pgsql bitnami/postgresql -n stage
+          helm --debug upgrade --install -n stage pgsql bitnami/postgresql --set global.postgresql.auth.database=${{ secrets.PG_DB_GINROOT }} --set global.postgresql.auth.username=${{ secrets.PG_USER_GINROOT }} --set global.postgresql.auth.password=${{ secrets.PG_PASS_GINROOT }}
       
       - name: Deploy PostgreSQL (dev)
         run: |
           helm repo add bitnami https://charts.bitnami.com/bitnami
-          helm upgrade --install pgsql bitnami/postgresql -n dev
+          helm --debug upgrade --install -n dev pgsql bitnami/postgresql --set global.postgresql.auth.database=${{ secrets.PG_DB_GINROOT }} --set global.postgresql.auth.username=${{ secrets.PG_USER_GINROOT }} --set global.postgresql.auth.password=${{ secrets.PG_PASS_GINROOT }}
 
       - name: Deploy the Helm chart (with more verbosity) if commit came the Main branch
         if: ${{ github.ref == 'refs/heads/main' }}
