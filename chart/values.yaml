@@ -80,3 +80,10 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+pgsqlServer: "pgsql-postgresql"
+projectName: "template-service"
+pgsqlUser: "admin"
+pgsqlPassword: "qwerty123"
+pgsqlDB: "test_db"
+

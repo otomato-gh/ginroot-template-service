@@ -32,6 +32,17 @@ spec:
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          env:
+            - name: POSTGRES_SERVER
+              value: "{{ .Values.pgsqlServer }}"
+            - name: PROJECT_NAME
+              value: "{{ .Values.projectName }}"
+            - name: POSTGRES_USER
+              value: "{{ .Values.pgsqlUser }}"
+            - name: POSTGRES_PASSWORD
+              value: "{{ .Values.pgsqlPassword }}"
+            - name: POSTGRES_DB
+              value: "{{ .Values.pgsqlDB }}"  
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
